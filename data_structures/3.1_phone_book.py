@@ -6,11 +6,6 @@ class Query:
         self.number = int(query[1])
         if self.type == 'add':
             self.name = query[2]
-
-class Contact:
-    def __init__(self, number, name):
-        self.number = number
-        self.name = name
             
 def read_queries():
     n = int(input())
@@ -21,18 +16,15 @@ def write_responses(result):
 
 def process_queries(queries):
     result = []
-    contacts = [None]*(10**7-1)
+    contacts = [None]*(10**7)
     for cur_query in queries:
         if cur_query.type == 'add':
-            if contacts[cur_query.number]:
-                contacts[cur_query.number].name = cur_query.name
-            else:
-                contacts[cur_query.number] = Contact(cur_query.number, cur_query.name)
+            contacts[cur_query.number] = cur_query.name
         elif cur_query.type == 'del':
             contacts[cur_query.number] = None
         elif cur_query.type == 'find':
             if contacts[cur_query.number]:
-                result.append(contacts[cur_query.number].name)
+                result.append(contacts[cur_query.number])
             else:
                 result.append("not found")
             
