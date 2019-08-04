@@ -31,8 +31,9 @@ def toposort(adj):
             if next:
                 continue
             else:
-                order.append(current[0])
-                visited[current[0]] = True
+                if not visited[current[0]]:
+                    order.append(current[0])
+                    visited[current[0]] = True
                 current = stack.pop() if stack else None
 
     return order[::-1]
