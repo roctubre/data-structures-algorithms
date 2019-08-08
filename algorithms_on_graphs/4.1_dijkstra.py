@@ -12,7 +12,7 @@ class QNode:
     def __lt__(self, other):
         return self.key < other.key
 
-        
+
 def distance(adj, cost, s, t):
     n = len(adj)
     dist = []
@@ -22,7 +22,7 @@ def distance(adj, cost, s, t):
         if u == s:
             dist.append(0)
         else:
-            dist.append(10**4)
+            dist.append(float("inf"))
         prev.append(None)
         heapq.heappush(h, QNode(dist[-1], u))
 
@@ -48,8 +48,19 @@ def distance(adj, cost, s, t):
                         heapq._siftup(h, idx)
                 else:
                     heapq.heappush(h, QNode(dist[v], v))
-
-    return dist[t] if dist[t] <= 10**3 else -1
+    
+    # rebuild path
+    v = t
+    p = [v]
+    directpath = False
+    while v != None:
+        p.insert(0, prev[v])
+        v = prev[v]
+        if v == s:
+            directpath = True
+    #print("Path:", p)
+    
+    return dist[t] if directpath else -1
 
 
 if __name__ == '__main__':
