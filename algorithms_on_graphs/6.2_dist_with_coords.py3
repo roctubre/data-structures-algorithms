@@ -4,11 +4,9 @@ import sys
 import queue
 import math
 
-
 class PQNode:
     def __init__(self, k):
         self.key = k
-        #self.value = v
         self.done = False
 
     def __lt__(self, other):
@@ -17,11 +15,11 @@ class PQNode:
 
 class AStar:
     def __init__(self, n, adj, cost, x, y):
-        # See the explanations of these fields in the starter for friend_suggestion        
+        # See the explanations of these fields in the starter for friend_suggestion 
+        self.inf = float("inf")       
         self.n = n
         self.adj = adj
         self.cost = cost
-        self.inf = float("inf")
         self.d = [self.inf]*n
         self.dm = [self.inf]*n
         self.visited = [False]*n
@@ -36,15 +34,17 @@ class AStar:
             self.d[v] = self.inf
             self.visited[v] = False
             self.dm[v] = self.inf
+            #self.cost2[v] = [None for _ in range(len(self.cost[v]))]
 
         self.workset = set()
 
     # See the explanation of this method in the starter for friend_suggestion
     def visit(self, q, qdict, v, dist, measure):
-        if self.d[v] > dist:
+        if self.dm[v] > measure:
             self.visited[v] = True
             self.workset.add(v)
             self.d[v] = dist
+            self.dm[v] = measure
 
             # change priority
             if v in qdict:
@@ -69,18 +69,15 @@ class AStar:
         while q.qsize() != 0:
             u = q.get_nowait()
             u = u[1]
-            if t == u.key:
+            if t == u.key or u.done:
                 continue
             if self.visited[t] and self.dm[u.key] > self.dm[t]:
-                return self.d[t]
-            if not u.done:
-                for vi in range(len(self.adj[u.key])):
-                    v = self.adj[u.key][vi]
-                    vcost = self.cost[u.key][vi]
-                    if self.dm[v] == self.inf:
-                        self.dm[v] = self.dm[u.key] + (vcost - self.pfunc(u.key, t) + self.pfunc(v, t))
+                break
 
-                    self.visit(q, qdict, v, self.d[u.key]+vcost, self.dm[v])
+            for vi, v in enumerate(self.adj[u.key]):
+                vcost = self.cost[u.key][vi]
+                dt = vcost - self.pfunc(v, t)
+                self.visit(q, qdict, v, self.d[u.key]+vcost, self.d[u.key]+dt)
 
         return self.d[t] if self.d[t] != self.inf else -1
 
