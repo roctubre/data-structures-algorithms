@@ -50,14 +50,15 @@ def suffix_tree(text):
                     break
 
             if not found:
-                current[text[s:]] = ncount
+                current[currentText] = ncount
                 tree[ncount] = dict()
                 ncount += 1
                 break
             elif not currentText:
                 break
 
-    return tree 
+    return tree
+    
 
 def get_suffixes(text):
     """ 
